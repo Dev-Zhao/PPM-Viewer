@@ -4,7 +4,7 @@ This project started when I was learning about raytracing through this awesome b
 
 The problem is Windows does not support viewing PPM files out of the box. I wanted to create a quick way to load and view a PPM file without needing to install any external applications. This web tool was made to solve this problem and it is fast and light-weight.
 
-DEMO: http://ppm-image-viewer.s3-website.us-east-2.amazonaws.com/
+**DEMO**: http://ppm-image-viewer.s3-website.us-east-2.amazonaws.com/
 
 # Features
 - Load PPM image files by using the file browser or drag and drop
