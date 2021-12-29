@@ -10,7 +10,9 @@ The problem is Windows does not support viewing PPM files out of the box. I want
 - Shrink or magnify images (can choose whether to maintain aspect ratio)
 - Save the image as a PNG
 
-Here is a PPM file that you can try out: https://www.dropbox.com/s/aa2s8cxa2omrnqy/image.ppm?dl=0
+Here is a PPM file that you can try out on the web app: https://www.dropbox.com/s/aa2s8cxa2omrnqy/image.ppm \
+Don't worry, PPM files are actually just harmless text files containing image data. Try editing it with a text editor!
+[Click Here](https://en.wikipedia.org/wiki/Netpbm#PPM_example) to learn more about the PPM image file format
 
 # Notes
 This project could have been done without React, but it is one of the most popular front-end web development frameworks at the moment. I wanted to use this opportunity to practice using this framework.
