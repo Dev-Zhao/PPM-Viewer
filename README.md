@@ -7,8 +7,10 @@ The problem is Windows does not support viewing PPM files out of the box. I want
 # Features
 - Load PPM image files by using the file browser or drag and drop
 - Input validation that provides meaningful error messages
-- Resize image (can choose whether to maintain aspect ratio)
+- Shrink or magnify images (can choose whether to maintain aspect ratio)
 - Save the image as a PNG
+
+Here is a PPM file that you can try out: https://www.dropbox.com/s/aa2s8cxa2omrnqy/image.ppm?dl=0
 
 # Notes
 This project could have been done without React, but it is one of the most popular front-end web development frameworks at the moment. I wanted to use this opportunity to practice using this framework.
