@@ -1,6 +1,6 @@
 # Overview
 
-This project started when I was learning about raytracing through this awesome book: [Ray Tracing in One Weekend](https://raytracing.github.io/books/RayTracingInOneWeekend.html) by Peter Shirley. We are creating the Ray Tracing renderer using the PPM image file format because it's one of the easiest formats to work with. \
+This project started when I was learning about raytracing through this awesome book: [Ray Tracing in One Weekend](https://raytracing.github.io/books/RayTracingInOneWeekend.html) by Peter Shirley. We are creating the Ray Tracing renderer using the PPM image file format because it's one of the easiest formats to work with.
 
 The problem is Windows does not support viewing PPM files out of the box. I wanted to create a quick way to load and view a PPM file without needing to install any external applications. This web tool was made to solve this problem and it is fast and light-weight.
 
