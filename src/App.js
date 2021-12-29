@@ -5,7 +5,8 @@ import './App.css';
 
 const App = () => {
   const [imageFile, setImageFile] = useState();
-  const [imageSize, setImageSize] = useState();
+  const [imageData, setImageData] = useState();
+  const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
   const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
   const [keepAspectRatio, setKeepAspectRatio] = useState(true);
 
@@ -20,6 +21,7 @@ const App = () => {
   const acceptedFile = acceptedFiles.length > 0 ? acceptedFiles[0] : null;
   useEffect(() => {
     setImageFile(acceptedFile);
+    setErrorMsg('');
 
     if (!acceptedFile) return;
 
@@ -57,9 +59,6 @@ const App = () => {
         setErrorMsg(error);
         return;
       }
-
-      setImageSize({ width: width, height: height });
-      setCanvasSize({ width: width, height: height });
 
       let canvas = canvRef.current;
       if (!canvas) return;
@@ -100,6 +99,10 @@ const App = () => {
           ctx.fillRect(x, y, 1, 1);
         }
       }
+
+      setImageData(ctx.getImageData(0, 0, canvas.width, canvas.height));
+      setImageSize({ width: width, height: height });
+      setCanvasSize({ width: width, height: height });
     };
 
     reader.onerror = function () {
@@ -118,51 +121,75 @@ const App = () => {
   }, [fileRejections.length]);
 
   const onCanvasWidthChange = (e) => {
-    let newWidth = e.target.value < 0 ? 0 : e.target.value;
+    let newWidth = !e.target.value || e.target.value < 0 ? 0 : e.target.value;
     let newHeight = canvasSize.height;
     if (keepAspectRatio) {
       let aspectRatio = imageSize.width / imageSize.height;
       newHeight = newWidth / aspectRatio;
     }
-    setCanvasSize({width: newWidth, height: newHeight});
+    setCanvasSize({ width: newWidth, height: newHeight });
   };
 
   const onCanvasHeightChange = (e) => {
     let newWidth = canvasSize.Width;
-    let newHeight = e.target.value < 0 ? 0 : e.target.value;
+    let newHeight = !e.target.value || e.target.value < 0 ? 0 : e.target.value;
     if (keepAspectRatio) {
       let aspectRatio = imageSize.width / imageSize.height;
       newWidth = newHeight * aspectRatio;
     }
-    setCanvasSize({width: newWidth, height: newHeight});
+    setCanvasSize({ width: newWidth, height: newHeight });
   };
 
   useEffect(() => {
     let timeout = setTimeout(() => {
-      if (!canvRef.current) return;
-      canvRef.current.style.width = canvasSize.width + 'px';
-      canvRef.current.style.height = canvasSize.height + 'px';
-    }, 500);
+      let canvas = canvRef.current;
+      if (!canvas || !imageData || imageSize.width === 0 || imageSize.height === 0) return;
+
+      // Update canvas size
+      canvas.width = canvasSize.width;
+      canvas.height = canvasSize.height;
+      canvas.style.width = canvasSize.width + 'px';
+      canvas.style.height = canvasSize.height + 'px';
+
+      // Draw the scaled image on to the canvas
+      if (canvas.width !== 0 && canvas.height !== 0) {
+        let tempCanvas = document.createElement('canvas');
+        tempCanvas.width = Math.max(canvasSize.width, imageSize.width);
+        tempCanvas.height = Math.max(canvasSize.height, imageSize.height);
+        let tempCanvasCtx = tempCanvas.getContext('2d');
+        tempCanvasCtx.putImageData(imageData, 0, 0);
+        
+        canvas.getContext('2d').scale(canvas.width / imageSize.width, canvas.height / imageSize.height);
+        canvas.getContext('2d').drawImage(tempCanvas, 0, 0);
+      }
+    }, 1000);
 
     return () => {
       clearTimeout(timeout);
-    }
-  }, [canvasSize]);
+    };
+  }, [canvasSize, imageData, imageSize.width, imageSize.height]);
 
   const onDownloadBtnClick = () => {
-    
+    if (!canvRef.current) return;
+    let downloadLink = document.createElement('a');
+    let imageURL = canvRef.current.toDataURL('image/png').replace('image/png', 'image/octet-stream');
+    downloadLink.download = imageFile.name + '.png';
+    downloadLink.href = imageURL;
+    downloadLink.click();
   };
 
   return (
     <div className="App">
-      <h1>PPM Image Viewer</h1>
+      <h1 >PPM Image Viewer</h1>
+      <span>By: Yu Chen Zhao ❤️<br/></span>
+      <a href="https://github.com/Dev-Zhao/PPM-Viewer">Github Repo</a>
       <div {...getRootProps({ className: 'dropzone' })}>
         <input {...getInputProps()} />
         <img className="dropzone-icon" src={imageIcon} alt="File Icon" />
         <span className="dropzone-heading">Drag and Drop</span>
         <span>
           <i>{imageFile?.name}</i>
-          {imageSize ? ` - ${imageSize.width}x${imageSize.height}` : null}
+          {imageFile ? ` - ${imageSize.width}x${imageSize.height}` : null}
         </span>
         <span>
           Drop PPM images here or
@@ -200,7 +227,12 @@ const App = () => {
               ></input>
             </div>
             <div>
-              <input type="checkbox" name="keep-aspect-ratio" onChange={() => setKeepAspectRatio(!keepAspectRatio)} checked={keepAspectRatio} />
+              <input
+                type="checkbox"
+                name="keep-aspect-ratio"
+                onChange={() => setKeepAspectRatio(!keepAspectRatio)}
+                checked={keepAspectRatio}
+              />
               <label htmlFor="keep-aspect-ratio">Keep original aspect ratio</label>
             </div>
           </div>

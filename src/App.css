@@ -19,6 +19,7 @@
   min-height: 150px;
   gap: 10px;
   cursor: pointer;
+  margin-top: 10px;
 }
 
 .dropzone-icon {
